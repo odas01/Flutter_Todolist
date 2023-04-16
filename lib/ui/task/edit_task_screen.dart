@@ -24,8 +24,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   final _editForm = GlobalKey<FormState>();
   late Task _editedTask;
   late DateTime _selectedDate;
-  late String dropdownValue = 'Mặc định';
-  var _isLoading = false;
+  late String dropdownValue;
   bool isChecked = false;
 
   void _pickUserDueDate() {
@@ -52,12 +51,17 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
       _editedTask = Provider.of<TasksManager>(context, listen: false)
           .itemsById(widget.id);
 
+      dropdownValue = Provider.of<PlansManager>(context, listen: false)
+          .getPlanById(_editedTask.planId!)
+          .title;
+
       isChecked = _editedTask.isImportant;
     } else {
       _editedTask = Task(id: null, planId: '', title: '', time: DateTime.now());
+      dropdownValue =
+          Provider.of<PlansManager>(context, listen: false).items[0].title;
       isChecked = false;
     }
-    dropdownValue = PlansManager().getPlanById(_editedTask.planId!).title;
     _selectedDate = _editedTask.time;
     super.initState();
   }
@@ -69,17 +73,13 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     }
     _editForm.currentState!.save();
 
-    setState(() {
-      _isLoading = true;
-    });
-
     try {
       final tasksManager = context.read<TasksManager>();
-      if (_editedTask.id != null) {
-        final planId = Provider.of<PlansManager>(context, listen: false)
-            .getPlanByTitle(dropdownValue)
-            .id;
+      final planId = Provider.of<PlansManager>(context, listen: false)
+          .getPlanByTitle(dropdownValue)
+          .id;
 
+      if (_editedTask.id != null) {
         await tasksManager.updateTask(Task(
             id: _editedTask.id,
             planId: planId,
@@ -87,9 +87,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             time: _selectedDate,
             isImportant: isChecked));
       } else {
-        final planId = Provider.of<PlansManager>(context, listen: false)
-            .getPlanByTitle(dropdownValue)
-            .id;
         await tasksManager.addTask(Task(
             planId: planId,
             title: _editedTask.title,
@@ -98,17 +95,20 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
       }
     } catch (error) {}
 
-    setState(() {
-      _isLoading = false;
-    });
-
     if (mounted) {
-      Navigator.of(context).pop();
+      final planId = Provider.of<PlansManager>(context, listen: false)
+          .getPlanByTitle(dropdownValue)
+          .id;
+      Navigator.of(context).pushNamed(
+        '/tasks',
+        arguments: planId,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // dropdownValue = Provider.of<PlansManager>(context).items[0].title;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 108, 155, 237),
@@ -209,16 +209,12 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
       },
       readOnly: true,
       decoration: InputDecoration(
-        hintText: _selectedDate == null
-            ? 'Provide your due date'
-            : DateFormat.yMMMd().format(_selectedDate).toString(),
-      ),
+          hintText: DateFormat.yMMMd().format(_selectedDate).toString()),
     );
   }
 
   Widget buildTaskPlan() {
     return Consumer<PlansManager>(builder: (context, planManager, child) {
-      // final plansManager = Provider.of<PlansManager>(context);
       final itemsDropdown = planManager.getTitle();
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

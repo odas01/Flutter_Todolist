@@ -40,7 +40,7 @@ class TaskGrid extends StatelessWidget {
                 ),
                 SizedBox(
                   height: title == 'Hôm nay'
-                      ? max(items.length * 70.0 + 10.0, 100)
+                      ? max(items.length * 60.0 + 10.0, 100)
                       : max(items.length * 90.0 + 10.0, 100),
                   child: ListView.builder(
                     padding: const EdgeInsets.only(top: 10.0),

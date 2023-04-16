@@ -16,4 +16,17 @@ class Plan {
       title: title ?? this.title,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+    };
+  }
+
+  static Plan fromJson(Map<String, dynamic> json) {
+    return Plan(
+      id: json['id'],
+      title: json['title'],
+    );
+  }
 }

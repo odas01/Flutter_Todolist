@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:todolist/ui/plans/plan_manager.dart';
 import 'package:todolist/ui/task/task_manager.dart';
 import '../../models/plan.dart';
+import '../shared/dialog_utils.dart';
 
 class PlanGridTile extends StatefulWidget {
   final Plan plan;
@@ -31,14 +32,40 @@ class _PlanGridTileState extends State<PlanGridTile> {
                 child: Container(
                   color: const Color.fromARGB(255, 229, 231, 235),
                   child: ListTile(
-                      title: Text(
-                        widget.plan.title,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      // ignore: unrelated_type_equality_checks
-                      subtitle: Text(countTask > 0
-                          ? "Công việc: $countTask"
-                          : "Không có công việc")),
+                    title: Text(
+                      widget.plan.title,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    // ignore: unrelated_type_equality_checks
+                    subtitle: Text(countTask > 0
+                        ? "Công việc: $countTask"
+                        : "Không có công việc"),
+                    trailing: Wrap(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              showEditPlanDialog(context, widget.plan);
+                            },
+                            icon: Icon(Icons.edit)),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              Provider.of<PlansManager>(ctx, listen: false)
+                                  .deletePlan(widget.plan);
+                              final tasks =
+                                  Provider.of<TasksManager>(ctx, listen: false)
+                                      .itemsByPlan(widget.plan.id!);
+                              for (var task in tasks) {
+                                Provider.of<TasksManager>(ctx, listen: false)
+                                    .deleteTask(task.id!);
+                              }
+                            },
+                            icon: Icon(Icons.delete))
+                      ],
+                    ),
+                  ),
                 ),
               ));
         }));

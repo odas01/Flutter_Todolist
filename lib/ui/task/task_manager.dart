@@ -1,49 +1,13 @@
 import '../../models/task.dart';
-import '../../models/auth_token.dart';
 import 'package:flutter/foundation.dart';
 import '../../services/tasks.service.dart';
 
 class TasksManager with ChangeNotifier {
-  // final List<Task> _items = [
-  //   Task(
-  //     id: 't1',
-  //     planId: 'p1',
-  //     title: 'Mua nuoc',
-  //     time: DateTime.parse('2023-04-09'),
-  //     isImportant: false,
-  //   ),
-  //   Task(
-  //     id: 't2',
-  //     planId: 'p1',
-  //     title: 'Mua dung cuuuuuuuuuu uuuuuuuuuu uuuuuuuuuu uuuuuuuuuu',
-  //     time: DateTime.parse('2022-04-08'),
-  //     isImportant: true,
-  //   ),
-  //   Task(
-  //     id: 't3',
-  //     planId: 'p1',
-  //     title: 'mua hop quet',
-  //     time: DateTime.now(),
-  //     isImportant: true,
-  //   ),
-  //   Task(
-  //     id: 't4',
-  //     planId: 'p1',
-  //     title: 'dung trai',
-  //     time: DateTime.parse('2024-07-20'),
-  //     isImportant: true,
-  //   ),
-  // ];
   List<Task> _items = [];
 
   final TasksService _tasksService;
 
-  TasksManager([AuthToken? authToken])
-      : _tasksService = TasksService(authToken);
-
-  set authToken(AuthToken? authToken) {
-    _tasksService.authToken = authToken;
-  }
+  TasksManager() : _tasksService = TasksService();
 
   Future<void> fetchTasks([bool filterByUser = false]) async {
     _items = await _tasksService.fetchTasks(filterByUser);

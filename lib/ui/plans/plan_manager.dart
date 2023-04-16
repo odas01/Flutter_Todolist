@@ -1,37 +1,48 @@
 import '../../models/plan.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
+import '../../services/plans.service.dart';
 
 class PlansManager with ChangeNotifier {
-  final List<Plan> _items = [
-    Plan(
-      id: 'p1',
-      title: 'Mặc định',
-    ),
-    Plan(
-      id: 'p2',
-      title: 'Cá nhân',
-    ),
-    Plan(
-      id: 'p3',
-      title: 'Làm việc',
-    ),
-    Plan(
-      id: 'p4',
-      title: 'Mua sắm',
-    ),
-    Plan(
-      id: 'p5',
-      title: 'Yêu thích',
-    ),
-  ];
-  void addPlan(String title) {
-    _items.add(Plan(title: title, id: 'p${DateTime.now().toIso8601String()}'));
+  List<Plan> _items = [];
+
+  final PlansService _plansService;
+
+  PlansManager() : _plansService = PlansService();
+
+  Future<void> fetchPlans([bool filterByUser = false]) async {
+    _items = await _plansService.fetchPlans();
     notifyListeners();
   }
 
-  int get itemCount {
-    return _items.length;
+  Future<void> addPlan(String title) async {
+    final newPlan = await _plansService.addPlan(Plan(title: title));
+    if (newPlan != null) {
+      _items.add(newPlan);
+      notifyListeners();
+    }
+  }
+
+  Future<void> updatePlan(Plan plan) async {
+    final index = _items.indexWhere((item) => item.id == plan.id);
+    if (index >= 0) {
+      if (await _plansService.updatePlan(plan)) {
+        _items[index] = plan;
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> deletePlan(Plan plan) async {
+    final index = _items.indexWhere((item) => item.id == plan.id);
+    Plan? existingPlan = _items[index];
+    _items.removeAt(index);
+    notifyListeners();
+
+    if (!await _plansService.deletedPlan(plan.id!)) {
+      _items.insert(index, existingPlan);
+      notifyListeners();
+    }
   }
 
   List<Plan> get items {
@@ -43,13 +54,7 @@ class PlansManager with ChangeNotifier {
   }
 
   Plan getPlanById(String id) {
-    print(id);
-    print(_items);
     return _items.firstWhere((item) => item.id == id, orElse: () => _items[0]);
-  }
-
-  List<Plan> getByTitle(String title) {
-    return _items.where((item) => item.title == title).toList();
   }
 
   List<String> getTitle() {

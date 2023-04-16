@@ -9,7 +9,7 @@ class Task {
 
   Task({
     this.id,
-    required this.planId,
+    this.planId,
     required this.title,
     required this.time,
     isImportant = false,
