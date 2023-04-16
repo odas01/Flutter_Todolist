@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'task_grid_tile.dart';
 import 'task_manager.dart';
-import 'package:provider/provider.dart';
 
 class TaskGrid extends StatelessWidget {
   final String title;

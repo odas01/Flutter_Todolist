@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todolist/ui/task/task_manager.dart';
-import '../../models/task.dart';
 import 'package:intl/intl.dart';
+
+import '/ui/task/task_manager.dart';
+import '/models/task.dart';
 
 class TaskGridTile extends StatefulWidget {
   final Task task;
@@ -44,6 +45,16 @@ class _TaskGridTileState extends State<TaskGridTile> {
                             onPressed: () {
                               Provider.of<TasksManager>(context, listen: false)
                                   .deleteTask(widget.task.id!);
+                              ScaffoldMessenger.of(context)
+                                ..hideCurrentSnackBar()
+                                ..showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Công việc đã được hoàn thành',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
                             },
                             icon: const Icon(Icons.check_box_outline_blank)),
                         title: Text(

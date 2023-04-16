@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../models/plan.dart';
-import '../plans/plan_manager.dart';
-import 'task_manager.dart';
 import 'package:provider/provider.dart';
+
+import 'task_manager.dart';
 import 'task_grid.dart';
+
+import '/models/plan.dart';
+import '../plans/plan_manager.dart';
 
 class TaskOverviewScreen extends StatefulWidget {
   static const routeName = '/tasks';
@@ -22,14 +24,10 @@ class _TaskOverviewScreenState extends State<TaskOverviewScreen> {
   late String dropdownValue = widget.plan.title;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final plansManager = Provider.of<PlansManager>(context, listen: false);
-    final planId = plansManager.getPlanByTitle(dropdownValue).id;
+    final planId = Provider.of<PlansManager>(context, listen: false)
+        .getPlanByTitle(dropdownValue)
+        .id;
 
     return Scaffold(
         floatingActionButton: Padding(
@@ -108,32 +106,47 @@ class _TaskOverviewScreenState extends State<TaskOverviewScreen> {
         ),
         body: Consumer<TasksManager>(
           builder: (context, taskManager, child) {
-            final items = taskManager.items;
-
+            final items = taskManager.itemsByPlan(planId!);
             return Padding(
-              
-                padding: const EdgeInsets.only(top: 15),
-                child: Visibility(
-                  visible: items.isNotEmpty,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        TaskGrid(
-                          planId: planId,
-                          title: 'Hôm nay',
-                        ),
-                        TaskGrid(
-                          planId: planId,
-                          title: 'Tương lai',
-                        ),
-                        TaskGrid(
-                          planId: planId,
-                          title: 'Quá hạn',
-                        ),
-                      ],
+              padding: const EdgeInsets.only(top: 15),
+              child: items.isNotEmpty
+                  ? SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          TaskGrid(
+                            planId: planId,
+                            title: 'Hôm nay',
+                          ),
+                          TaskGrid(
+                            planId: planId,
+                            title: 'Tương lai',
+                          ),
+                          TaskGrid(
+                            planId: planId,
+                            title: 'Quá hạn',
+                          ),
+                        ],
+                      ),
+                    )
+                  : Center(
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Chưa có công việc nào. Vui lòng nhập 1 công việc!',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(
+                                  '/task-detail',
+                                  arguments: '',
+                                );
+                              },
+                              icon: const Icon(Icons.add_rounded))
+                        ],
+                      ),
                     ),
-                  ),
-                ));
+            );
           },
         ));
   }

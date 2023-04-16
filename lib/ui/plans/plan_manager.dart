@@ -1,7 +1,7 @@
-import '../../models/plan.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
-import '../../services/plans.service.dart';
+
+import '/models/plan.dart';
+import '/services/plans.service.dart';
 
 class PlansManager with ChangeNotifier {
   List<Plan> _items = [];

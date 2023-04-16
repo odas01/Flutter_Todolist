@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../models/task.dart';
-import '../task/task_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../plans/plan_manager.dart';
 
+import '/models/task.dart';
+import '../task/task_manager.dart';
+import '../plans/plan_manager.dart';
 import '../shared/dialog_utils.dart';
 
 class TaskDetailScreen extends StatefulWidget {
@@ -86,12 +86,34 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             title: _editedTask.title,
             time: _selectedDate,
             isImportant: isChecked));
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Chỉnh sửa hoàn tất',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
       } else {
         await tasksManager.addTask(Task(
             planId: planId,
             title: _editedTask.title,
             time: _selectedDate,
             isImportant: isChecked));
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Công việc mới đã được thêm',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
       }
     } catch (error) {}
 
@@ -147,7 +169,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               const SizedBox(
                 height: 60,
               ),
-              const Text('Thêm vào danh sách',
+              const Text('Chọn kế hoạch',
                   style: TextStyle(
                       color: Color.fromARGB(255, 108, 155, 237),
                       fontWeight: FontWeight.w700,

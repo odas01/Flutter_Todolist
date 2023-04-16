@@ -27,11 +27,10 @@ class MyApp extends StatelessWidget {
         home: const PlanOverviewScreen(),
         routes: {
           PlanOverviewScreen.routeName: (context) => const PlanOverviewScreen(),
-        },  
+        },
         onGenerateRoute: (settings) {
           if (settings.name == TaskDetailScreen.routeName) {
             final id = settings.arguments as String;
-            // print(id);
             return MaterialPageRoute(
               builder: (context) {
                 return TaskDetailScreen(id);

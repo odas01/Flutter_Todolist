@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todolist/ui/plans/plan_manager.dart';
-import 'package:todolist/ui/task/task_manager.dart';
-import '../../models/plan.dart';
+
+import '/ui/task/task_manager.dart';
+import '/models/plan.dart';
 import '../shared/dialog_utils.dart';
 
 class PlanGridTile extends StatefulWidget {
@@ -36,7 +36,6 @@ class _PlanGridTileState extends State<PlanGridTile> {
                       widget.plan.title,
                       style: const TextStyle(fontSize: 18),
                     ),
-                    // ignore: unrelated_type_equality_checks
                     subtitle: Text(countTask > 0
                         ? "Công việc: $countTask"
                         : "Không có công việc"),
@@ -52,15 +51,6 @@ class _PlanGridTileState extends State<PlanGridTile> {
                         ),
                         IconButton(
                             onPressed: () {
-                              // Provider.of<PlansManager>(ctx, listen: false)
-                              //     .deletePlan(widget.plan);
-                              // final tasks =
-                              //     Provider.of<TasksManager>(ctx, listen: false)
-                              //         .itemsByPlan(widget.plan.id!);
-                              // for (var task in tasks) {
-                              //   Provider.of<TasksManager>(ctx, listen: false)
-                              //       .deleteTask(task.id!);
-                              // }
                               showDeletePlanDialog(context, widget.plan);
                             },
                             icon: const Icon(Icons.delete))

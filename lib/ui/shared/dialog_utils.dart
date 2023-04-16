@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/plan.dart';
+
+import '/models/plan.dart';
 import '../plans/plan_manager.dart';
 import '../task/task_manager.dart';
 
@@ -10,7 +11,7 @@ Future<bool?> showCreatePlanDialog(BuildContext context) {
   return showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: const Text('Tạo kế hoạch mới'),
+      title: const Text('Tạo kế hoạch mới', style: TextStyle(fontSize: 20)),
       content: TextFormField(
         initialValue: valueInput,
         decoration: const InputDecoration(hintText: 'Nội dung danh mục'),
@@ -37,6 +38,16 @@ Future<bool?> showCreatePlanDialog(BuildContext context) {
               Provider.of<PlansManager>(ctx, listen: false)
                   .addPlan(capitalize(valueInput));
               Navigator.of(ctx).pop(true);
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Đã thêm kế hoạch mới',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
             },
             child: const Text('Tạo')),
       ],
@@ -47,11 +58,20 @@ Future<bool?> showCreatePlanDialog(BuildContext context) {
 Future<bool?> showEditPlanDialog(BuildContext context, Plan plan) {
   String valueInput = plan.title;
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
-  String title = plan.title;
   return showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text("Chỉnh sửa '${plan.title}'"),
+      title: RichText(
+        text: TextSpan(
+            text: "Chỉnh sửa kế hoạch ",
+            style: const TextStyle(fontSize: 20),
+            children: [
+              TextSpan(
+                  text: plan.title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 20))
+            ]),
+      ),
       content: TextFormField(
         initialValue: valueInput,
         decoration: const InputDecoration(hintText: 'Nội dung danh mục'),
@@ -78,6 +98,16 @@ Future<bool?> showEditPlanDialog(BuildContext context, Plan plan) {
               Provider.of<PlansManager>(ctx, listen: false)
                   .updatePlan(plan.copyWith(title: capitalize(valueInput)));
               Navigator.of(ctx).pop(true);
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Chỉnh sửa kế hoạch hoàn tất',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
             },
             child: const Text('Chỉnh sửa')),
       ],
@@ -89,17 +119,26 @@ Future<bool?> showDeletePlanDialog(BuildContext context, Plan plan) {
   return showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Wrap(
-        children: [
-          const Text("Xóa kế hoạch "),
-          Text(
-            plan.title,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          )
-        ],
-      ),
-      content: Text(
-          "Những công việc thuộc kế hoạch '${plan.title}' sẽ bị xóa toàn bộ. Bạn có chắc chắn muốn xóa?"),
+      title: RichText(
+          text: TextSpan(
+              text: "Xóa kế hoạch ",
+              style: const TextStyle(fontSize: 20),
+              children: [
+            TextSpan(
+                text: plan.title,
+                style:
+                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 20))
+          ])),
+      content: RichText(
+          text: TextSpan(text: "Những công việc thuộc kế hoạch ", children: [
+        TextSpan(
+            text: plan.title,
+            style: const TextStyle(fontWeight: FontWeight.w600)),
+        const TextSpan(text: " sẽ bị xóa toàn bộ. Bạn có chắc chắn muốn xóa?")
+      ]))
+      // Text(
+      //     "Những công việc thuộc kế hoạch '${plan.title}' sẽ bị xóa toàn bộ. Bạn có chắc chắn muốn xóa?"),
+      ,
       actions: <Widget>[
         TextButton(
           onPressed: () {

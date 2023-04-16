@@ -1,9 +1,8 @@
-import 'dart:math';
-
-import 'plan_grid_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todolist/ui/plans/plan_manager.dart';
+
+import 'plan_grid_tile.dart';
+import 'plan_manager.dart';
 
 class PlanGrid extends StatelessWidget {
   const PlanGrid({super.key});

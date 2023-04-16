@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/ui/plans/plan_grid.dart';
+import 'package:provider/provider.dart';
+
+import '/ui/plans/plan_grid.dart';
 import '../plans/plan_manager.dart';
 import '../task/task_manager.dart';
-import 'plan_manager.dart';
-import 'package:provider/provider.dart';
 import '../shared/dialog_utils.dart';
 
 class PlanOverviewScreen extends StatefulWidget {

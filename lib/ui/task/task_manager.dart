@@ -1,6 +1,7 @@
-import '../../models/task.dart';
 import 'package:flutter/foundation.dart';
-import '../../services/tasks.service.dart';
+
+import '/models/task.dart';
+import '/services/tasks.service.dart';
 
 class TasksManager with ChangeNotifier {
   List<Task> _items = [];
