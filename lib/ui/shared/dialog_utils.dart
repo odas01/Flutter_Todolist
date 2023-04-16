@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/plan.dart';
 import '../plans/plan_manager.dart';
+import '../task/task_manager.dart';
 
 Future<bool?> showCreatePlanDialog(BuildContext context) {
   String valueInput = '';
@@ -46,10 +47,11 @@ Future<bool?> showCreatePlanDialog(BuildContext context) {
 Future<bool?> showEditPlanDialog(BuildContext context, Plan plan) {
   String valueInput = plan.title;
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+  String title = plan.title;
   return showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: const Text('Tạo danh mục mới'),
+      title: Text("Chỉnh sửa '${plan.title}'"),
       content: TextFormField(
         initialValue: valueInput,
         decoration: const InputDecoration(hintText: 'Nội dung danh mục'),
@@ -78,6 +80,44 @@ Future<bool?> showEditPlanDialog(BuildContext context, Plan plan) {
               Navigator.of(ctx).pop(true);
             },
             child: const Text('Chỉnh sửa')),
+      ],
+    ),
+  );
+}
+
+Future<bool?> showDeletePlanDialog(BuildContext context, Plan plan) {
+  return showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Wrap(
+        children: [
+          const Text("Xóa kế hoạch "),
+          Text(
+            plan.title,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          )
+        ],
+      ),
+      content: Text(
+          "Những công việc thuộc kế hoạch '${plan.title}' sẽ bị xóa toàn bộ. Bạn có chắc chắn muốn xóa?"),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(ctx).pop(false);
+          },
+          child: const Text('Trở về'),
+        ),
+        TextButton(
+            onPressed: () {
+              Provider.of<PlansManager>(ctx, listen: false).deletePlan(plan);
+              final tasks = Provider.of<TasksManager>(ctx, listen: false)
+                  .itemsByPlan(plan.id!);
+              for (var task in tasks) {
+                Provider.of<TasksManager>(ctx, listen: false)
+                    .deleteTask(task.id!);
+              }
+            },
+            child: const Text('Xóa')),
       ],
     ),
   );

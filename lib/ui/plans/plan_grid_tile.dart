@@ -46,23 +46,24 @@ class _PlanGridTileState extends State<PlanGridTile> {
                             onPressed: () {
                               showEditPlanDialog(context, widget.plan);
                             },
-                            icon: Icon(Icons.edit)),
-                        SizedBox(
+                            icon: const Icon(Icons.edit)),
+                        const SizedBox(
                           width: 10,
                         ),
                         IconButton(
                             onPressed: () {
-                              Provider.of<PlansManager>(ctx, listen: false)
-                                  .deletePlan(widget.plan);
-                              final tasks =
-                                  Provider.of<TasksManager>(ctx, listen: false)
-                                      .itemsByPlan(widget.plan.id!);
-                              for (var task in tasks) {
-                                Provider.of<TasksManager>(ctx, listen: false)
-                                    .deleteTask(task.id!);
-                              }
+                              // Provider.of<PlansManager>(ctx, listen: false)
+                              //     .deletePlan(widget.plan);
+                              // final tasks =
+                              //     Provider.of<TasksManager>(ctx, listen: false)
+                              //         .itemsByPlan(widget.plan.id!);
+                              // for (var task in tasks) {
+                              //   Provider.of<TasksManager>(ctx, listen: false)
+                              //       .deleteTask(task.id!);
+                              // }
+                              showDeletePlanDialog(context, widget.plan);
                             },
-                            icon: Icon(Icons.delete))
+                            icon: const Icon(Icons.delete))
                       ],
                     ),
                   ),
